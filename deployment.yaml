@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: angular-client
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - backend:
+          serviceName: angular-client
+          servicePort: 4200
+---
+apiVersion: extensions/v1beta1
+kind: Deployment                                          # 8
+metadata:
+  name: angular-client
+spec:
+  replicas: 2                                             # 9
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate                                   # 10
+    rollingUpdate: 
+      maxUnavailable: 1                                   # 11
+      maxSurge: 1                                         # 12
+  template:
+    metadata:
+      labels:
+        app: angular-client                                  # 13
+    spec:
+      containers:
+        - image: giangnguyen/angular-client:dev #14
+          imagePullPolicy: Always                         # 15
+          name: angular-client
+          ports:
+            - containerPort: 4200
