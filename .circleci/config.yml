@@ -22,9 +22,43 @@ jobs:
       - run:
           name: Build Docker image #4
           command: |
-            docker build . -t giangnguyen/angular-client:dev
+            docker build . -t $DOCKER_REGISTRY/angular-client:$CIRCLE_SHA1
       - run:
           name: Push Docker Image to GCR registry #5
           command: |
              docker login -u $HUB_ACCOUNT -p $HUB_PASS
-             docker push giangnguyen/angular-client:dev
+             docker push $DOCKER_REGISTRY/angular-client:$CIRCLE_SHA1
+  deploy:
+    docker:
+      - image: google/cloud-sdk:alpine
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Authenticate gcloud SDK with GCP project #1
+          command: |
+            echo $SERVICE_ACCOUNT_KEY > ${HOME}/gcp-key.json
+            gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+            gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
+      - run:
+          name: Install kubectl
+          command: gcloud components install kubectl
+      - run:
+          name: Install dependencies
+          command: |
+            apk add gettext libintl
+      - run:
+          name: Deploy container to Dev Kubernetes cluster
+          command: |
+            envsubst < deployment.yaml > output.yaml
+            kubectl apply -f output.yaml --record
+            kubectl rollout status deployment/angular-client
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
