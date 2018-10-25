@@ -1,14 +1,15 @@
 <!-- Bootstrap Navbar -->
-<nav class="navbar navbar-light bg-faded">
+<nav class="navbar navbar-expand-md  navbar-dark bg-indigo-darker box-shadow">
   <div class="container">
     <a class="navbar-brand" href="#">Mean Docker version 1</a>
   </div>
 </nav>
 
 <div class="container">
-  <div [style.margin-top.px]="10" class="row">
+    <div class="row">
+  <div class="col-md-12 my-3 p-3 bg-white rounded box-shadow">
     <h3>Add new person</h3>
-    <form class="form-inline">
+    <form>
       <div class="form-group">
         <label for="name">Name</label>
         <input type="text" class="form-control" id="name" #name>
@@ -20,11 +21,16 @@
       <button type="button" (click)="addPerson(name.value, age.value)" class="btn btn-primary">Add person</button>
     </form>
   </div>
-  <div [style.margin-top.px]="10" class="row">
-    <h3>People</h3>
-    <!-- Bootstrap Card -->
-    <div [style.margin-right.px]="10" class="card card-block col-md-3" *ngFor="let person of people">
-      <h4 class="card-title">{{person.name}}  {{person.age}}</h4>
     </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h3>People</h3>
+    </div>
+
+    <!-- Bootstrap Card -->
+    <div class="card card-block col-md-3 box-shadow" *ngFor="let person of people">
+      <h4 class="card-body">{{person.name}} {{person.age}}</h4>
+    </div>
+
   </div>
 </div>

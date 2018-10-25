@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
 
   // Add one person to the API
   addPerson(name, age) {
+    debugger;
     this.http.post(`${this.API}/users`, { name, age })
       .pipe(map(res => res.json()))
       .subscribe(() => {
