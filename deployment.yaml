@@ -29,7 +29,7 @@ spec:
         app: angular-client                                  # 13
     spec:
       containers:
-        - image: giangnguyen/angular-client:dev #14
+        - image: $DOCKER_REGISTRY/angular-client:$CIRCLE_SHA1 #14
           imagePullPolicy: Always                         # 15
           name: angular-client
           ports:
